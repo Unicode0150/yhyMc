@@ -1,0 +1,544 @@
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    font-family: Arial, sans-serif;
+    background: #87CEEB;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* ============ 准星 ============ */
+#crosshair {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 24px;
+    height: 24px;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.7;
+}
+#crosshair::before, #crosshair::after {
+    content: '';
+    position: absolute;
+    background: white;
+}
+#crosshair::before { top: 50%; left: 0; width: 100%; height: 2px; transform: translateY(-50%); }
+#crosshair::after { left: 50%; top: 0; height: 100%; width: 2px; transform: translateX(-50%); }
+
+/* ============ 状态栏 ============ */
+#status {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #fff;
+    background: rgba(128, 128, 128, 0.3);
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 11px;
+    z-index: 100;
+    font-family: monospace;
+    border: 1px solid rgba(180, 180, 180, 0.5);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+/* ============ 聊天框 ============ */
+#chatBox {
+    position: absolute;
+    top: 55px;
+    left: 10px;
+    width: 260px;
+    max-height: 200px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 120;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.chatMsg {
+    background: rgba(128, 128, 128, 0.3);
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: monospace;
+    border: 1px solid rgba(180, 180, 180, 0.5);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    animation: chatFadeIn 0.25s ease-out;
+    transition: opacity 0.5s;
+    word-break: break-all;
+    line-height: 1.4;
+}
+
+.chatMsg.warn {
+    color: #ffcccc;
+    border-color: rgba(255, 100, 100, 0.8);
+}
+
+@keyframes chatFadeIn {
+    from { opacity: 0; transform: translateX(-15px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ============ 快捷栏 ============ */
+#hotbar {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 4px;
+    padding: 5px;
+    background: rgba(128, 128, 128, 0.3);
+    border-radius: 8px;
+    border: 1px solid rgba(180, 180, 180, 0.5);
+    z-index: 150;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.slot {
+    width: 52px;
+    height: 52px;
+    border-radius: 6px;
+    background: rgba(128, 128, 128, 0.25);
+    border: 1px solid rgba(180, 180, 180, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.1s;
+}
+
+.slot.selected {
+    border-color: #fff;
+    background: rgba(220, 220, 220, 0.4);
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.7);
+    transform: scale(1.05);
+}
+
+.slot .cubeIcon {
+    width: 30px;
+    height: 30px;
+    border-radius: 3px;
+    border: 1px solid rgba(0,0,0,0.4);
+    box-shadow: inset -3px -3px 0 rgba(0,0,0,0.3), inset 3px 3px 0 rgba(255,255,255,0.3);
+}
+
+.slot .slotNum {
+    position: absolute;
+    bottom: 1px;
+    right: 3px;
+    font-size: 10px;
+    color: #fff;
+    text-shadow: 1px 1px 1px #000;
+    font-weight: bold;
+}
+
+/* ============ 背包按钮 ============ */
+#inventoryBtn {
+    position: absolute;
+    bottom: 12px;
+    right: 15px;
+    width: 55px;
+    height: 55px;
+    border-radius: 8px;
+    background: rgba(128, 128, 128, 0.3);
+    border: 1px solid rgba(180, 180, 180, 0.5);
+    color: white;
+    font-size: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 150;
+    cursor: pointer;
+    touch-action: none;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+#inventoryBtn:active { transform: scale(0.95); }
+
+/* ============ 背包面板 ============ */
+#inventoryPanel {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 92%;
+    max-width: 620px;
+    max-height: 88vh;
+    background: rgba(128, 128, 128, 0.35);
+    border: 2px solid rgba(180, 180, 180, 0.6);
+    border-radius: 14px;
+    z-index: 500;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    padding: 12px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+#inventoryPanel.hidden { display: none; }
+
+.inv-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #fff;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 4px 8px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid rgba(180, 180, 180, 0.5);
+    font-family: monospace;
+    flex-shrink: 0;
+}
+
+#inventoryClose {
+    cursor: pointer;
+    font-size: 18px;
+    padding: 4px 12px;
+    color: #fff;
+    border-radius: 6px;
+    background: rgba(128, 128, 128, 0.3);
+    border: 1px solid rgba(180, 180, 180, 0.5);
+    touch-action: none;
+}
+
+#inventoryClose:active { background: rgba(200, 200, 200, 0.5); }
+
+#inventoryScroll {
+    flex: 1;
+    min-height: 0;
+    max-height: 60vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+    background: rgba(128, 128, 128, 0.15);
+    border: 1px solid rgba(180, 180, 180, 0.4);
+    border-radius: 8px;
+}
+
+#inventoryScroll::-webkit-scrollbar { width: 10px; }
+#inventoryScroll::-webkit-scrollbar-track { background: rgba(128, 128, 128, 0.2); border-radius: 4px; }
+#inventoryScroll::-webkit-scrollbar-thumb {
+    background: rgba(180, 180, 180, 0.6);
+    border-radius: 4px;
+}
+#inventoryScroll::-webkit-scrollbar-thumb:hover { background: rgba(200, 200, 200, 0.8); }
+
+#inventoryGrid {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    gap: 3px;
+    padding: 6px;
+}
+
+.inv-slot {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 4px;
+    background: rgba(128, 128, 128, 0.25);
+    border: 1px solid rgba(180, 180, 180, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.1s;
+    position: relative;
+}
+
+.inv-slot:hover { border-color: #fff; background: rgba(200, 200, 200, 0.3); }
+.inv-slot:active { transform: scale(0.92); }
+
+.inv-slot .cubeIcon {
+    width: 70%;
+    height: 70%;
+    border-radius: 2px;
+    border: 1px solid rgba(0,0,0,0.4);
+    box-shadow: inset -3px -3px 0 rgba(0,0,0,0.3), inset 3px 3px 0 rgba(255,255,255,0.3);
+}
+
+.inv-hint {
+    color: #fff;
+    font-size: 12px;
+    text-align: center;
+    margin-top: 8px;
+    font-family: monospace;
+    flex-shrink: 0;
+    opacity: 0.7;
+}
+
+/* ============ 中央提示 ============ */
+#hint {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    background: rgba(128, 128, 128, 0.35);
+    padding: 15px 25px;
+    border-radius: 10px;
+    font-size: 14px;
+    z-index: 200;
+    text-align: center;
+    pointer-events: none;
+    transition: opacity 0.8s;
+    border: 1px solid rgba(180, 180, 180, 0.5);
+    line-height: 1.6;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
+/* ============ 统一按钮风格（灰色透明 + 淡灰边框） ============ */
+.mc-btn {
+    background: rgba(128, 128, 128, 0.3) !important;
+    border: 1px solid rgba(180, 180, 180, 0.5) !important;
+    border-radius: 8px !important;
+    color: #fff !important;
+    font-family: Arial, sans-serif !important;
+    font-size: 13px !important;
+    font-weight: bold !important;
+    padding: 8px 14px !important;
+    cursor: pointer !important;
+    touch-action: none !important;
+    user-select: none !important;
+    backdrop-filter: blur(4px) !important;
+    -webkit-backdrop-filter: blur(4px) !important;
+    box-shadow: none !important;
+    transition: transform 0.15s, background 0.15s !important;
+    white-space: nowrap !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.mc-btn:active {
+    background: rgba(200, 200, 200, 0.5) !important;
+    transform: scale(0.96) !important;
+}
+
+.mc-btn.active {
+    background: rgba(220, 220, 220, 0.55) !important;
+    border-color: #fff !important;
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.6) !important;
+}
+
+.mc-btn.dragging {
+    background: rgba(200, 200, 200, 0.6) !important;
+    border-color: #fff !important;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.8) !important;
+    transform: scale(1.08) !important;
+    z-index: 9999 !important;
+    opacity: 0.95 !important;
+}
+
+/* ============ 通用按钮面板（灰色透明 + 淡灰边框 + 可拖动） ============ */
+.btn-panel {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 200;
+    touch-action: none;
+}
+
+.btn-panel .btn-item {
+    background: rgba(128, 128, 128, 0.3);
+    border: 1px solid rgba(180, 180, 180, 0.5);
+    border-radius: 8px;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+    padding: 8px 14px;
+    min-width: 120px;
+    text-align: center;
+    cursor: pointer;
+    touch-action: none;
+    user-select: none;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    box-shadow: none;
+    transition: transform 0.15s, background 0.15s;
+    white-space: nowrap;
+}
+
+.btn-panel .btn-item:active {
+    background: rgba(200, 200, 200, 0.5);
+    transform: scale(0.96);
+}
+
+.btn-panel .btn-item.active {
+    background: rgba(220, 220, 220, 0.55);
+    border-color: #fff;
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
+}
+
+.btn-panel .btn-item.dragging {
+    background: rgba(200, 200, 200, 0.6);
+    border-color: #fff;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+    transform: scale(1.08);
+    z-index: 9999;
+    opacity: 0.95;
+}
+
+/* ============ 设置弹窗 ============ */
+.settings-modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px 24px;
+    background: rgba(128, 128, 128, 0.35);
+    border: 2px solid rgba(180, 180, 180, 0.6);
+    border-radius: 14px;
+    z-index: 300;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.2s;
+    min-width: 260px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.settings-modal.show {
+    display: flex;
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.settings-modal .modal-title {
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 6px;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.settings-modal .input-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 8px 12px;
+    background: rgba(128, 128, 128, 0.25);
+    border: 1px solid rgba(180, 180, 180, 0.5);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 13px;
+}
+
+.settings-modal .input-row span {
+    font-weight: bold;
+}
+
+.settings-modal .input-row input {
+    width: 80px;
+    padding: 5px 8px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(180, 180, 180, 0.6);
+    border-radius: 5px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+    font-family: monospace;
+    text-align: center;
+    outline: none;
+    touch-action: auto;
+}
+
+.settings-modal .input-row input:focus {
+    border-color: #fff;
+    background: rgba(0, 0, 0, 0.6);
+}
+
+.settings-modal .close-btn {
+    margin-top: 10px;
+    padding: 10px;
+    background: rgba(128, 128, 128, 0.3);
+    border: 1px solid rgba(180, 180, 180, 0.5);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+    touch-action: none;
+    user-select: none;
+    transition: background 0.15s;
+}
+
+.settings-modal .close-btn:active {
+    background: rgba(200, 200, 200, 0.5);
+}
+
+/* ============ 设置总开关按钮 ============ */
+#settingsToggle {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    background: rgba(128, 128, 128, 0.3);
+    border: 1px solid rgba(180, 180, 180, 0.5);
+    color: #fff;
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 250;
+    cursor: pointer;
+    touch-action: none;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    box-shadow: none;
+    transition: transform 0.15s, background 0.15s;
+}
+
+#settingsToggle:active {
+    background: rgba(200, 200, 200, 0.5);
+    transform: scale(0.95);
+}
+
+#settingsToggle.active {
+    background: rgba(220, 220, 220, 0.55);
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
+}
+
+/* ============ 响应式 ============ */
+@media (max-width: 600px) {
+    .slot { width: 42px; height: 42px; }
+    .slot .cubeIcon { width: 24px; height: 24px; }
+    #status { font-size: 10px; padding: 4px 8px; }
+    #inventoryBtn { width: 48px; height: 48px; font-size: 24px; right: 10px; }
+    #inventoryPanel { width: 96%; padding: 8px; max-height: 90vh; }
+    .inv-header { font-size: 14px; }
+    #inventoryGrid { gap: 2px; padding: 4px; }
+    #inventoryScroll { max-height: 55vh; }
+    #chatBox { width: 200px; max-height: 140px; top: 50px; }
+    .chatMsg { font-size: 11px; padding: 5px 9px; }
+    .mc-btn { font-size: 11px !important; padding: 6px 10px !important; }
+    .btn-panel .btn-item { font-size: 11px; padding: 6px 10px; min-width: 100px; }
+}

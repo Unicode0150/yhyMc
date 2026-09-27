@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>我的世界</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- 准星 -->
+    <div id="crosshair"></div>
+
+    <!-- 右上角状态栏 -->
+    <div id="status">
+        位置: <span id="pos">0, 0, 0</span> | 区块: <span id="chunkInfo">0,0</span> | FPS: <span id="fps">0</span>
+    </div>
+
+    <!-- 左上角聊天框 -->
+    <div id="chatBox"></div>
+
+    <!-- 快捷栏（由 JS 动态填充） -->
+    <div id="hotbar"></div>
+
+    <!-- 背包按钮 -->
+    <div id="inventoryBtn">📦</div>
+
+    <!-- 背包面板 -->
+    <div id="inventoryPanel" class="hidden">
+        <div class="inv-header">
+            <span>背包</span>
+            <div id="inventoryClose">✕</div>
+        </div>
+        <div id="inventoryScroll">
+            <div id="inventoryGrid"></div>
+        </div>
+        <div class="inv-hint">点击方块放入快捷栏 · ↑↓ 键滚动</div>
+    </div>
+
+    <!-- 中央提示 -->
+    <div id="hint">滑动屏幕转动视角<br>轻点放置 · 长按破坏</div>
+
+    <!-- 引入 Three.js -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
+            }
+        }
+    </script>
+    <script type="module" src="main.js"></script>
+</body>
+</html>
